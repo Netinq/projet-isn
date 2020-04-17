@@ -19,7 +19,7 @@ class Crab
   {
     location.y = height - 150 - playerHeight;
     refHeight = height;
-    spriteSheet = loadImage("Entites.png");
+    spriteSheet = loadImage("textures/entities/entities.png");
     delaisAnim = 0;
     crabAnim[0] = spriteSheet.get(10*16, 0, 16, 16);
     crabAnim[0].resize(40, 30);

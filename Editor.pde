@@ -12,11 +12,11 @@ public class EditorMap {
 
   EditorMap()
   {
-    blocsSheet = loadImage("editorBlocsSheet.png");
-    eraser = loadImage("gomme.png");
-    pen = loadImage("crayon.png");
-    export= loadImage("valider.png");
-    importPng = loadImage("import.png");
+    blocsSheet = loadImage("textures/editor/editorBlocsSheet.png");
+    eraser = loadImage("textures/editor/gomme.png");
+    pen = loadImage("textures/editor/crayon.png");
+    export= loadImage("textures/editor/valider.png");
+    importPng = loadImage("textures/editor/import.png");
     for (int y = 0; y < 31; y++)
     {
       blocsTexture[y] = blocsSheet.get(y*50, 0, 50, 50);
