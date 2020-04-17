@@ -12,49 +12,60 @@ void settings()
 {
   size(1000, 700, P3D);
 }
+
 void setup()
 {
   frameRate(30);
   menu = new Menu();
   menu_return = new Menu_return();
 }
+
 void draw()
 {
-  if (status == 0) menu.draw();
+  if (status == 0)
+  {
+    menu.draw();
+  }
   else if (status == 1)
   {
     player.draw();
     crab.draw();
     map.draw();
     menu_return.draw();
-  } else if (status ==2)
-
+  } 
+  else if (status ==2)
   {
     editorMap.draw();
     menu_return.draw();
   }
 }
+
 void keyReleased() {
-  switch(keyCode) {
-  case RIGHT:
-    player.rightPressed = false;
-    break;
-  case LEFT:
-    player.leftPressed = false;
-    break;
+  if (status == 1) {
+    switch(keyCode) {
+    case RIGHT:
+      player.rightPressed = false;
+      break;
+    case LEFT:
+      player.leftPressed = false;
+      break;
+    }
   }
 }
+
 void keyPressed() {
-  if (keyCode == UP || keyCode == 32) {
-    player.upPressed = true;
-  }
-  if (keyCode == LEFT) {
-    player.rightPressed = false;
-    player.leftPressed = true;
-  }    
-  if (keyCode == RIGHT) {
-    player.leftPressed = false;
-    player.rightPressed = true;
+  if (status == 1) {
+    if (keyCode == UP || keyCode == 32) {
+      player.upPressed = true;
+    }
+    if (keyCode == LEFT) {
+      player.rightPressed = false;
+      player.leftPressed = true;
+    }    
+    if (keyCode == RIGHT) {
+      player.leftPressed = false;
+      player.rightPressed = true;
+    }
   }
 }
 

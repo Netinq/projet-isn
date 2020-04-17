@@ -13,16 +13,27 @@ class Player
   public PImage spriteSheet;
   PImage[] perso= new PImage[37];
   boolean col = false;
+  
+  private int deadCount = 0;
 
   Player()
   {
     location.y = height - 150 - playerHeight;
     refHeight = height;
-    spriteSheet = loadImage("Entites.png");
+    spriteSheet = loadImage("textures/entities/entities.png");
 
     for (int x = 0; x < 36; x++) {
       perso[x] = spriteSheet.get(x*16, 0, 16, 16);
       perso[x].resize(40, 75);
+    }
+  }
+  
+  void death() {
+    deadCount++;
+    if (deadCount >= 1)
+    {
+      status = 0;
+      println("Joueur mort");
     }
   }
 
@@ -46,12 +57,12 @@ class Player
   }
 
   void draw() {
+    
     location.y += height-refHeight;
     if (refHeight != height) {
-      refHeight = height;
+        refHeight = height;
     }
     background(55, 115, 225);
-    rect(0, height - 100, width, 100);
     if (delaisAnim < 2)
       delaisAnim ++;
     else 
@@ -133,7 +144,21 @@ class Player
   {
     int x = int(location.x);
     int y = int(location.y);
-    if (y+playerHeight+1 > height - 100) return true;
+    if (y+playerHeight+1 > height){
+      death();
+      return true;
+    }
+    for (int i = 0; i < map.blocsFloor.size(); i++) {
+      if (y+playerHeight+1<= height - map.blocsFloor.get(i)[1]+50 && y+playerHeight+1>= height - map.blocsFloor.get(i)[1])
+      {
+        if ((x > map.blocsFloor.get(i)[0] && x+1 < map.blocsFloor.get(i)[0]+50)
+          ||(x+playerWidth > map.blocsFloor.get(i)[0] && x+playerWidth < map.blocsFloor.get(i)[0]+50))
+        {
+          jump = 0;
+          return true;
+        }
+      }
+    }
     for (int i = 0; i < map.blocs.size(); i++)
     {
       if (y+playerHeight+1<= height - 150 - map.blocs.get(i)[1]+50 && y+playerHeight+1>= height - 150 - map.blocs.get(i)[1])
@@ -161,6 +186,10 @@ class Player
           {
             map.blocs.get(b)[0]--;
           }
+          for (int b = 0; b < map.blocsFloor.size(); b++)
+          {
+            map.blocsFloor.get(b)[0]--;
+          }
           for(int u = 0; u < map.blocsNoCollide.size(); u++)
           {
             map.blocsNoCollide.get(u)[0]--;
@@ -180,7 +209,10 @@ class Player
           {
             map.blocs.get(b)[0]++;
           }
-          
+          for (int b = 0; b < map.blocsFloor.size(); b++)
+          {
+            map.blocsFloor.get(b)[0]++;
+          }
           for(int u = 0; u < map.blocsNoCollide.size(); u++)
           {
             map.blocsNoCollide.get(u)[0]++;
