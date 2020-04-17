@@ -2,8 +2,8 @@ class Crab
 {
   public boolean death = false;
   public int refHeight = 0;
-  public int playerHeight = 40;
-  public int playerWidth = 30;
+  public int playerHeight = 30;
+  public int playerWidth = 40;
   public boolean rightPressed, leftPressed, upPressed, sens = true;
   public float gravity = 2;
   public int animEnCours = 0;
@@ -61,7 +61,7 @@ class Crab
   
   void jump()
   {
-    velocity.y+= -10;  
+    velocity.y+= -2;  
   }
   void gravity()
   {

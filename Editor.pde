@@ -3,7 +3,7 @@ import static javax.swing.JOptionPane.*;
 public class EditorMap {
   int nbTexture = 94;
   File csvImport;
-  PImage blocsSheet, pen, eraser, export,importPng,up,down;
+  PImage blocsSheet, pen, eraser, export, importPng, up, down;
   PImage[] blocsTexture = new PImage[nbTexture];
   int[][] blocAt=new int[5][9];
   int[][] blocListAt=new int[5][ceil(nbTexture/5)+1];
@@ -15,7 +15,7 @@ public class EditorMap {
   int largeur = 1;
   int scroll;
   boolean maxScroll;
-  
+
   EditorMap()
   {
     this.hauteur = int(showInputDialog("Hauteur"));
@@ -43,37 +43,37 @@ public class EditorMap {
     image(pen, width/2+34, 15, 32, 32);
     image(eraser, width/2+34+34, 15, 32, 32);
     image(export, width/2+68+34, 15, 32, 32);
-    image(importPng,width/2+68+34+32,15,32,32);
-    image(up,width-45,height/2-16,32,32);
-    image(down,width-45,height/2+16,32,32);
+    image(importPng, width/2+68+34+32, 15, 32, 32);
+    image(up, width-45, height/2-16, 32, 32);
+    image(down, width-45, height/2+16, 32, 32);
     for (int col = 0; col < largeur; col++) {
       for (int row = 0; row < hauteur; row++) { 
         if (Integer.valueOf(blocAt[col][row]) != null) {
-          if(blocAt[col][row] >=0)
-            image(blocsTexture[blocAt[col][row]], col*(width/2/largeur),row*(height/hauteur),(width/2/largeur)+2,height/hauteur);
+          if (blocAt[col][row] >=0)
+            image(blocsTexture[blocAt[col][row]], col*(width/2/largeur), row*(height/hauteur), (width/2/largeur)+2, height/hauteur);
           else {
-            tint(255,0,0,255);
-            image(blocsTexture[blocAt[col][row]*(-1)], col*(width/2/largeur),row*(height/hauteur),width/2/largeur,height/hauteur);
+            tint(255, 0, 0, 255);
+            image(blocsTexture[blocAt[col][row]*(-1)], col*(width/2/largeur), row*(height/hauteur), width/2/largeur, height/hauteur);
             tint(255);
-          }          
+          }
         } else {
           blocAt[col][row] = 0;
         }
       }
     }
     int increment = 0;
-    for (int row = 0; row < 8 ; row++)
+    for (int row = 0; row < 8; row++)
     {
       for (int col = 0; col < 5; col++)
       {
 
-  
+
         fill(255);
-        text("Choississez le bloc à placer, et le mode (effacer/placer)", width-(width/2), height/9.5-(height/50));  
-        if(increment+1+scroll*5 < nbTexture) {
+        text("Choississez le bloc à placer, et le mode (effacer/placer)", width/2+width/5, height/9.5-(height/50));  
+        if (increment+1+scroll*5 < nbTexture) {
           image(blocsTexture[increment+1+scroll*5], (width/2)*1.1+col*(width/12), row*height/9.5+(height/10), width/15-2, height/9.5-2);
           maxScroll = false;
-        }else{
+        } else {
           maxScroll = true;
         }
         blocListAt[col][row] = increment+1+scroll*5;
@@ -81,11 +81,31 @@ public class EditorMap {
 
         if (!delete) {
           fill(180);
-          text("Mode édition", width/2-(width/10), height/9.5-40);
+          text("Mode édition", width/2+width/5, height/9.5-40);
         } else {
           fill(120);
-          text("Mode gomme", width/2-(width/10), height/9.5-40);
+          text("Mode gomme", width/2+width/5, height/9.5-40);
         }
+      }
+    }
+  }
+  void mouseDragged()
+  {
+
+    if (overBloc() != null)
+    {
+      int[] colrow = overBloc();
+      int col =colrow[0];
+      int row = colrow[1];
+      if (!delete)
+      {
+        if (mouseButton == LEFT) {
+          blocAt[col][row] = blocSelected;
+        } else {
+          blocAt[col][row] = blocSelected*(-1);
+        }
+      } else {
+        blocAt[col][row] = 0;
       }
     }
   }
@@ -100,10 +120,10 @@ public class EditorMap {
       int row = colrow[1];
       if (!delete)
       {
-        if(mouseButton == LEFT) {
+        if (mouseButton == LEFT) {
           blocAt[col][row] = blocSelected;
         } else {
-          blocAt[col][row] = blocSelected*(-1);       
+          blocAt[col][row] = blocSelected*(-1);
         }
       } else {
         blocAt[col][row] = 0;
@@ -137,16 +157,16 @@ public class EditorMap {
     {
       if (mouseY >= height/2-16 && mouseY <= height/2-16+32)
       {
-        if(scroll > 0)
+        if (scroll > 0)
           scroll--;
       }
     }
-    
+
     if (mouseX >= width-45 && mouseX <= width-45+32)
     {
       if (mouseY >= height/2+16 && mouseY <= height/2+16+32)
       {
-        if(!maxScroll)
+        if (!maxScroll)
           scroll++;
       }
     }
@@ -166,7 +186,7 @@ public class EditorMap {
         exportCsv();
       }
     }
-    
+
     if (mouseX >= width/2+68+34+32 && mouseX <= width/2+68+34+32+32)
     {
       if (mouseY >= 15 && mouseY <= 47)
@@ -175,12 +195,12 @@ public class EditorMap {
       }
     }
   }
-  
+
   void importCsv()
   {
-    selectInput("Choississez le fichier .csv à importer", "fileSelected",null,this);
+    selectInput("Choississez le fichier .csv à importer", "fileSelected", null, this);
   }
-  
+
   void fileSelected(File selection) {
     if (selection == null) {
       println("Fenetre fermée ou fichier introuvable");
@@ -194,9 +214,8 @@ public class EditorMap {
         }
       }
     }
-    
   }
-  
+
   void exportCsv()
   {
     Long name = System.currentTimeMillis();

@@ -31,6 +31,7 @@ class Menu {
   
   void launch_editor()
   {
+    
     editorMap = new EditorMap();
     status = 2;
   }

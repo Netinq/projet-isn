@@ -69,7 +69,10 @@ void keyPressed() {
     }
   }
 }
-
+void mouseDragged()
+{
+  if (status == 2) editorMap.mouseDragged();
+}
 void mouseClicked() {
   if (status == 0) menu.mouseClicked();
   else if (status == 1) menu_return.mouseClicked();
