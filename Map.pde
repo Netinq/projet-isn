@@ -3,7 +3,7 @@ class Map {
   public int nbStructuresRegister = listFiles("/str_lvl_1").length-1;
   public int nbStructuresGenerate = 10;
   public int safe = 1;
-  public int pos[] = {250, 100};
+  public int pos[] = {0, 100};
   public PImage blocsSheet;
   
   PImage[] blocsTexture = new PImage[30];
@@ -20,7 +20,6 @@ class Map {
     registerStr("str_lvl_1/str_start.csv", false);
     for (int i = 0; i < nbStructuresGenerate; i++) {
       defineStr();
-      pos[0] += 250;
     }
     blocsSheet = loadImage("textures/blocs/blocsSheet.png");
     for (int y = 0; y < 30; y++)
@@ -31,6 +30,7 @@ class Map {
 
   void draw()
   {
+    background(55, 115, 225);
     floorBloc();
   }
 
@@ -58,7 +58,7 @@ class Map {
     int real_col = 8;
     for (int row = 0; row < 10; row++)
     {
-      for (int col = 1; col < 6; col++)
+      for (int col = 1; col <= table.getColumnCount(); col++)
       {
         if (table.getRow(row).getInt("C"+col) != 0)
         {
@@ -86,6 +86,7 @@ class Map {
       }
       real_col--;
     }
+    pos[0] += table.getColumnCount()*50;
   }
 
   void defineStr()
