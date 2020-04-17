@@ -42,7 +42,11 @@ class Crab
   }
 
   void draw() {
-
+    location.y += height-refHeight;
+    if(height != refHeight)
+    {
+      refHeight = height;
+    }
     animation();
     image(crabAnim[animEnCours], location.x, location.y);
 
@@ -67,12 +71,12 @@ class Crab
   }
   void positionUpdate()
   {
-    if (player.location.x > width/2) {
+    if (player.location.x >= width/2) {
         location.x+=-player.velocity.x+velocity.x;
     } else {
       location.x+= velocity.x;
-      location.y+= velocity.y;
     }
+    location.y+= velocity.y;
   }
   
   void movement()
