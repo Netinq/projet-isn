@@ -1,5 +1,6 @@
 class Crab 
 {
+  public boolean death = false;
   public int refHeight = 0;
   public int playerHeight = 40;
   public int playerWidth = 30;
@@ -42,22 +43,25 @@ class Crab
   }
 
   void draw() {
-    location.y += height-refHeight;
-    if(height != refHeight)
-    {
-      refHeight = height;
+   if(!death) {
+      location.y += height-refHeight;
+      if(height != refHeight)
+      {
+        refHeight = height;
+      }
+      animation();
+      image(crabAnim[animEnCours], location.x, location.y);
+      gravity();
+      movement();
+      positionUpdate();
     }
-    animation();
-    image(crabAnim[animEnCours], location.x, location.y);
-
-    gravity();
-    movement();
-    positionUpdate();
 
   }
+  
+  
   void jump()
   {
-    velocity.y+= -2;  
+    velocity.y+= -10;  
   }
   void gravity()
   {
@@ -71,6 +75,9 @@ class Crab
   }
   void positionUpdate()
   {
+    if (location.y+playerHeight+1 > height){
+      death = true;
+    }
     if (player.location.x >= width/2) {
         location.x+=-player.velocity.x+velocity.x;
     } else {
@@ -84,7 +91,7 @@ class Crab
     if (wall())
     {
       velocity.x=0;
-      if(jump<2)
+      if(jump<1)
       {
         jump();
         jump++;
@@ -169,7 +176,18 @@ class Crab
   {
     int x = int(location.x);
     int y = int(location.y);
-    if (y+playerHeight+1 > height - 100) return true;
+    if (y+playerHeight+1 > height) return true;
+    for (int i = 0; i < map.blocsFloor.size(); i++) {
+      if (y+playerHeight+1<= height - map.blocsFloor.get(i)[1]+50 && y+playerHeight+1>= height - map.blocsFloor.get(i)[1])
+      {
+        if ((x > map.blocsFloor.get(i)[0] && x+1 < map.blocsFloor.get(i)[0]+50)
+          ||(x+playerWidth > map.blocsFloor.get(i)[0] && x+playerWidth < map.blocsFloor.get(i)[0]+50))
+        {
+          jump = 0;
+          return true;
+        }
+      }
+    }
     for (int i = 0; i < map.blocs.size(); i++)
     {
       if (y+playerHeight+1<= height - 150 - map.blocs.get(i)[1]+50 && y+playerHeight+1>= height - 150 - map.blocs.get(i)[1])
@@ -177,6 +195,7 @@ class Crab
         if ((x > map.blocs.get(i)[0] && x+1 < map.blocs.get(i)[0]+50)
           ||(x+playerWidth > map.blocs.get(i)[0] && x+playerWidth < map.blocs.get(i)[0]+50))
         {
+          jump = 0;
           return true;
         }
       }
