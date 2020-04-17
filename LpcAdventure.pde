@@ -4,6 +4,7 @@ EditorMap editorMap;
 Map map;
 Menu menu;
 Menu_return menu_return;
+Game game;
 
 int status = 0;
 
@@ -28,9 +29,9 @@ void draw()
   }
   else if (status == 1)
   {
-    player.draw();
     crab.draw();
     map.draw();
+    player.draw();
     menu_return.draw();
   } 
   else if (status ==2)

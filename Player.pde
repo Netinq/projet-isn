@@ -62,7 +62,7 @@ class Player
     if (refHeight != height) {
         refHeight = height;
     }
-    background(55, 115, 225);
+    //background(55, 115, 225);
     if (delaisAnim < 2)
       delaisAnim ++;
     else 
