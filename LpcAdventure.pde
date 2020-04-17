@@ -29,8 +29,8 @@ void draw()
   }
   else if (status == 1)
   {
-    crab.draw();
     map.draw();
+    crab.draw();
     player.draw();
     menu_return.draw();
   } 

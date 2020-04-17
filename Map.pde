@@ -5,8 +5,7 @@ class Map {
   public int safe = 1;
   public int pos[] = {0, 100};
   public PImage blocsSheet;
-  
-  PImage[] blocsTexture = new PImage[30];
+  PImage[] blocsTexture = new PImage[93];
   ArrayList<int[]> blocs = new ArrayList<int[]>();
   ArrayList<int[]> blocsNoCollide = new ArrayList<int[]>();
   ArrayList<int[]> blocsFloor = new ArrayList<int[]>();
@@ -22,7 +21,7 @@ class Map {
       defineStr();
     }
     blocsSheet = loadImage("textures/blocs/blocsSheet.png");
-    for (int y = 0; y < 30; y++)
+    for (int y = 0; y < 93; y++)
     {
       blocsTexture[y] = blocsSheet.get(y*50, 0, 50, 50);
     }

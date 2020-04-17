@@ -1,23 +1,36 @@
-public class EditorMap {
+import static javax.swing.JOptionPane.*;
 
+public class EditorMap {
+  int nbTexture = 94;
   File csvImport;
-  PImage blocsSheet, pen, eraser, export,importPng;
-  PImage[] blocsTexture = new PImage[31];
+  PImage blocsSheet, pen, eraser, export,importPng,up,down;
+  PImage[] blocsTexture = new PImage[nbTexture];
   int[][] blocAt=new int[5][9];
-  int[][] blocListAt=new int[5][6];
+  int[][] blocListAt=new int[5][ceil(nbTexture/5)+1];
   String[] blocList = {"herbe", "terre", "pierre", "pierre moussue", "brique", "bloc noir", "bloc bleu foncé", "bloc marron", "bloc cyan", "bloc gris foncé", "bloc vert foncé", "bloc bleu clair", "bloc vert clair", "bloc magenta", "bloc orange", "bloc rose", "bloc violet", "bloc rouge", "bloc gris clair", "bloc blanc", "bloc jaune", "paille", "échelle", "bûche", "planche", "sable", "grès", "feuilles", "lampe off", "lampe on"};
   int cnt = 0;
   int blocSelected = 0;
   boolean delete = false;
-
+  int hauteur = 1;
+  int largeur = 1;
+  int scroll;
+  boolean maxScroll;
+  
   EditorMap()
   {
+    this.hauteur = int(showInputDialog("Hauteur"));
+    this.largeur = int(showInputDialog("Largeur"));
+    blocAt=new int[largeur+1][hauteur+1];
     blocsSheet = loadImage("textures/editor/editorBlocsSheet.png");
     eraser = loadImage("textures/editor/gomme.png");
     pen = loadImage("textures/editor/crayon.png");
     export= loadImage("textures/editor/valider.png");
     importPng = loadImage("textures/editor/import.png");
-    for (int y = 0; y < 31; y++)
+    up =loadImage("textures/editor/Up.png");
+    down =loadImage("textures/editor/Down.png");
+    scroll = 0;
+    maxScroll = false;
+    for (int y = 0; y < nbTexture; y++)
     {
       blocsTexture[y] = blocsSheet.get(y*50, 0, 50, 50);
     }
@@ -25,20 +38,22 @@ public class EditorMap {
 
   void draw()
   {
+
     background(41, 39, 39);
     image(pen, width/2+34, 15, 32, 32);
     image(eraser, width/2+34+34, 15, 32, 32);
     image(export, width/2+68+34, 15, 32, 32);
     image(importPng,width/2+68+34+32,15,32,32);
-    
-    for (int col = 0; col < 5; col++) {
-      for (int row = 0; row < 9; row++) { 
+    image(up,width-45,height/2-16,32,32);
+    image(down,width-45,height/2+16,32,32);
+    for (int col = 0; col < largeur; col++) {
+      for (int row = 0; row < hauteur; row++) { 
         if (Integer.valueOf(blocAt[col][row]) != null) {
           if(blocAt[col][row] >=0)
-            image(blocsTexture[blocAt[col][row]], 2+col*width/15, row*height/9.5, width/15-2, height/9.5-2);
+            image(blocsTexture[blocAt[col][row]], col*(width/2/largeur),row*(height/hauteur),(width/2/largeur)+2,height/hauteur);
           else {
             tint(255,0,0,255);
-            image(blocsTexture[blocAt[col][row]*(-1)], 2+col*width/15, row*height/9.5, width/15-2, height/9.5-2);
+            image(blocsTexture[blocAt[col][row]*(-1)], col*(width/2/largeur),row*(height/hauteur),width/2/largeur,height/hauteur);
             tint(255);
           }          
         } else {
@@ -47,15 +62,21 @@ public class EditorMap {
       }
     }
     int increment = 0;
-    for (int col = 0; col < 5; col++)
+    for (int row = 0; row < 8 ; row++)
     {
-      for (int row = 0; row < 6; row++)
+      for (int col = 0; col < 5; col++)
       {
 
+  
         fill(255);
-        text("Choississez le bloc à placer, et le mode (effacer/placer)", width-(width/2), height/9.5-(height/50));
-        image(blocsTexture[increment+1], (width/15)*col+(width/2), row*height/9.5+(height/10), width/15-2, height/9.5-2);
-        blocListAt[col][row]=increment+1;
+        text("Choississez le bloc à placer, et le mode (effacer/placer)", width-(width/2), height/9.5-(height/50));  
+        if(increment+1+scroll*5 < nbTexture) {
+          image(blocsTexture[increment+1+scroll*5], (width/2)*1.1+col*(width/12), row*height/9.5+(height/10), width/15-2, height/9.5-2);
+          maxScroll = false;
+        }else{
+          maxScroll = true;
+        }
+        blocListAt[col][row] = increment+1+scroll*5;
         increment++; 
 
         if (!delete) {
@@ -112,6 +133,24 @@ public class EditorMap {
       }
     }
 
+    if (mouseX >= width-45 && mouseX <= width-45+32)
+    {
+      if (mouseY >= height/2-16 && mouseY <= height/2-16+32)
+      {
+        if(scroll > 0)
+          scroll--;
+      }
+    }
+    
+    if (mouseX >= width-45 && mouseX <= width-45+32)
+    {
+      if (mouseY >= height/2+16 && mouseY <= height/2+16+32)
+      {
+        if(!maxScroll)
+          scroll++;
+      }
+    }
+
     if (mouseX >= width/2+34+34 && mouseX <= width/2+66+34)
     {
       if (mouseY >= 15 && mouseY <= 47)
@@ -147,9 +186,9 @@ public class EditorMap {
       println("Fenetre fermée ou fichier introuvable");
     } else {
       Table table = loadTable(selection.getAbsolutePath(), "header");
-      for (int row = 0; row < 9; row++)
+      for (int row = 0; row < hauteur; row++)
       {
-        for (int col = 1; col < 6; col++)
+        for (int col = 1; col < largeur; col++)
         {
           blocAt[col][row] = table.getRow(row).getInt("C"+col);
         }
@@ -162,14 +201,14 @@ public class EditorMap {
   {
     Long name = System.currentTimeMillis();
     Table table = new Table();
-    for (int i=1; i<6; i++) {
-      table.addColumn("C"+i);
+    for (int i=0; i<largeur; i++) {
+      table.addColumn("C"+(i+1));
     }
 
-    for (int row=0; row<9; row++)
+    for (int row=0; row<hauteur; row++)
     {
       TableRow newRow = table.addRow();
-      for (int col=1; col<6; col++)
+      for (int col=1; col<largeur+1; col++)
       {
         newRow.setInt("C"+col, blocAt[col-1][row]);
       }
@@ -184,11 +223,11 @@ public class EditorMap {
 
   int[] overBloc()
   {
-    for (int col = 0; col < 5; col++) {
-      for (int row = 0; row < 9; row++) {
-        if (mouseX >= 2+col*width/15 && mouseX <= 2+col*width/15+width/15-2)
+    for (int col = 0; col < largeur; col++) {
+      for (int row = 0; row < hauteur; row++) {
+        if (mouseX >= col*(width/2/largeur) && mouseX <= col*(width/2/largeur)+(width/2/largeur))
         {
-          if (mouseY >= row*height/9.5-10 && mouseY <= row*height/9.5+height/9.5-2)
+          if (mouseY >= row*(height/hauteur) && mouseY <= row*(height/hauteur)+(height/hauteur))
           {
             int returning[] = {col, row};
             return returning;
@@ -202,10 +241,10 @@ public class EditorMap {
   int[] overListeBloc()
   {
     for (int col = 0; col < 5; col++) {
-      for (int row = 0; row < 6; row++) {
-        if (mouseX >= (width/15)*col+(width/2) && mouseX <= (width/15)*col+(width/2)+(width/15-2))
+      for (int row = 0; row < 8; row++) {
+        if (mouseX >= (width/2)*1.1+col*(width/12) && mouseX <= (width/2)*1.1+col*(width/12)+width/15-2)
         {
-          if (mouseY >= row*height/9.5+(height/10) && mouseY <= row*height/9.5+(height/10)+(height/9.5-2))
+          if (mouseY >=row*height/9.5+(height/10) && mouseY <= row*height/9.5+(height/10)+height/9.5-2)
           {
             int returning[] = {col, row};
             return returning;

@@ -43,7 +43,7 @@ class Crab
   }
 
   void draw() {
-   if(!death) {
+    if(!death) {
       location.y += height-refHeight;
       if(height != refHeight)
       {
