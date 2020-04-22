@@ -206,9 +206,12 @@ public class EditorMap {
       println("Fenetre fermée ou fichier introuvable");
     } else {
       Table table = loadTable(selection.getAbsolutePath(), "header");
+      hauteur = table.getRowCount();
+      largeur = table.getColumnCount();
+      blocAt=new int[largeur+1][hauteur+1];
       for (int row = 0; row < hauteur; row++)
       {
-        for (int col = 1; col < largeur; col++)
+        for (int col = 1; col < largeur ; col++)
         {
           blocAt[col][row] = table.getRow(row).getInt("C"+col);
         }

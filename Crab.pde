@@ -41,6 +41,7 @@ class Crab
       delaisAnim++;
     }
   }
+  
 
   void draw() {
     if(!death) {
