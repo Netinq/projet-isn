@@ -15,6 +15,8 @@ public class EditorMap {
   int largeur = 1;
   int scroll;
   boolean maxScroll;
+  long drawSuccess=0L;
+  String name;
 
   EditorMap()
   {
@@ -87,6 +89,12 @@ public class EditorMap {
           text("Mode gomme", width/2+width/5, height/9.5-40);
         }
       }
+    }
+    
+    if((System.currentTimeMillis()/1000L)-drawSuccess < 5)
+    {
+      fill(0,155,50);
+      text("Fichier "+name+".csv exporté avec succès", width/2+width/5, height/9.5-40-20);  
     }
   }
   void mouseDragged()
@@ -221,7 +229,8 @@ public class EditorMap {
 
   void exportCsv()
   {
-    Long name = System.currentTimeMillis();
+
+    name = showInputDialog("Entrez le nom du fichier");
     Table table = new Table();
     for (int i=0; i<largeur; i++) {
       table.addColumn("C"+(i+1));
@@ -235,7 +244,7 @@ public class EditorMap {
         newRow.setInt("C"+col, blocAt[col-1][row]);
       }
     }
-
+    drawSuccess = System.currentTimeMillis()/1000L;
     saveTable(table, name+".csv");
   }
 
