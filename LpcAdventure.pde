@@ -7,7 +7,7 @@ Menu_return menu_return;
 Game game;
 
 int status = 0;
-
+int refHeight,refWidth;
 //INITIALISATION DU JEU
 void settings()
 {
@@ -19,6 +19,8 @@ void setup()
   frameRate(30);
   menu = new Menu();
   menu_return = new Menu_return();
+  refHeight = height;
+  refWidth = width;
 }
 
 void draw()
@@ -32,11 +34,24 @@ void draw()
     map.draw();
     crab.draw();
     player.draw();
+    if(refHeight != height || refWidth != width)
+    {
+      refHeight = height;
+      refWidth = width;
+      menu_return = new Menu_return();
+    }
     menu_return.draw();
   } 
   else if (status ==2)
   {
+    
     editorMap.draw();
+    if(refHeight != height || refWidth != width)
+    {
+      refHeight = height;
+      refWidth = width;
+      menu_return = new Menu_return();
+    }
     menu_return.draw();
   }
 }

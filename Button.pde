@@ -4,6 +4,7 @@ class Button {
   String label;
   color bcolor, bhcolor, fcolor;
   PFont font;
+
   
   Button(int x, int y, int bheight, int bwidth, int btheight, String label, color bcolor, color bhcolor, PFont font, color fcolor) {
     this.x = x;
@@ -28,7 +29,10 @@ class Button {
     fill(fcolor);
     textFont(font);
     text(label, x + ((bwidth/2)-(textWidth(label)/2)), y + btheight);
+
   }
+  
+
   
   boolean hover() {
     if (mouseX >= x && mouseY >= y && mouseX <= x + bwidth && mouseY <= y+bheight) return true;
