@@ -15,8 +15,8 @@ public class EditorMap {
   int largeur = 1;
   int scroll;
   boolean maxScroll;
-  long drawSuccess=0L;
-  String name;
+  long drawSuccess=0L,drawFail=0L;
+  String name = "";
 
   EditorMap()
   {
@@ -90,11 +90,16 @@ public class EditorMap {
         }
       }
     }
-    
-    if((System.currentTimeMillis()/1000L)-drawSuccess < 5)
+
+    if ((System.currentTimeMillis()/1000L)-drawSuccess < 5)
     {
-      fill(0,155,50);
-      text("Fichier "+name+".csv exporté avec succès", width/2+width/5, height/9.5-40-20);  
+      fill(0, 155, 50);
+      text("Fichier "+name+".csv exporté avec succès", width/2+width/5, height/9.5-40-20);
+    }
+        if ((System.currentTimeMillis()/1000L)-drawFail < 5)
+    {
+      fill(155, 0, 50);
+      text("Echec de la manipulation (nom null)", width/2+width/5, height/9.5-40-20);
     }
   }
   void mouseDragged()
@@ -214,12 +219,13 @@ public class EditorMap {
       println("Fenetre fermée ou fichier introuvable");
     } else {
       Table table = loadTable(selection.getAbsolutePath(), "header");
+      name = selection.getName().replaceAll(".csv","");
       hauteur = table.getRowCount();
       largeur = table.getColumnCount();
       blocAt=new int[largeur+1][hauteur+1];
       for (int row = 0; row < hauteur; row++)
       {
-        for (int col = 1; col < largeur ; col++)
+        for (int col = 1; col < largeur; col++)
         {
           blocAt[col][row] = table.getRow(row).getInt("C"+col);
         }
@@ -229,60 +235,64 @@ public class EditorMap {
 
   void exportCsv()
   {
+    name = showInputDialog("Entrez le nom du fichier", name);
+    if (name != null) {
+      Table table = new Table();
+      for (int i=0; i<largeur; i++) {
+        table.addColumn("C"+(i+1));
+      }
 
-    name = showInputDialog("Entrez le nom du fichier");
-    Table table = new Table();
-    for (int i=0; i<largeur; i++) {
-      table.addColumn("C"+(i+1));
-    }
-
-    for (int row=0; row<hauteur; row++)
-    {
-      TableRow newRow = table.addRow();
-      for (int col=1; col<largeur+1; col++)
+      for (int row=0; row<hauteur; row++)
       {
-        newRow.setInt("C"+col, blocAt[col-1][row]);
+        TableRow newRow = table.addRow();
+        for (int col=1; col<largeur+1; col++)
+        {
+          newRow.setInt("C"+col, blocAt[col-1][row]);
+        }
       }
+      drawSuccess = System.currentTimeMillis()/1000L;
+      saveTable(table, "str_lvl_1/"+name+".csv");
+      
+    } else {
+      drawFail = System.currentTimeMillis()/1000L;
     }
-    drawSuccess = System.currentTimeMillis()/1000L;
-    saveTable(table, name+".csv");
   }
 
 
 
 
 
-  int[] overBloc()
-  {
-    for (int col = 0; col < largeur; col++) {
-      for (int row = 0; row < hauteur; row++) {
-        if (mouseX >= col*(width/2/largeur) && mouseX <= col*(width/2/largeur)+(width/2/largeur))
+int[] overBloc()
+{
+  for (int col = 0; col < largeur; col++) {
+    for (int row = 0; row < hauteur; row++) {
+      if (mouseX >= col*(width/2/largeur) && mouseX <= col*(width/2/largeur)+(width/2/largeur))
+      {
+        if (mouseY >= row*(height/hauteur) && mouseY <= row*(height/hauteur)+(height/hauteur))
         {
-          if (mouseY >= row*(height/hauteur) && mouseY <= row*(height/hauteur)+(height/hauteur))
-          {
-            int returning[] = {col, row};
-            return returning;
-          }
+          int returning[] = {col, row};
+          return returning;
         }
       }
     }
-    return null;
   }
+  return null;
+}
 
-  int[] overListeBloc()
-  {
-    for (int col = 0; col < 5; col++) {
-      for (int row = 0; row < 8; row++) {
-        if (mouseX >= (width/2)*1.1+col*(width/12) && mouseX <= (width/2)*1.1+col*(width/12)+width/15-2)
+int[] overListeBloc()
+{
+  for (int col = 0; col < 5; col++) {
+    for (int row = 0; row < 8; row++) {
+      if (mouseX >= (width/2)*1.1+col*(width/12) && mouseX <= (width/2)*1.1+col*(width/12)+width/15-2)
+      {
+        if (mouseY >=row*height/9.5+(height/10) && mouseY <= row*height/9.5+(height/10)+height/9.5-2)
         {
-          if (mouseY >=row*height/9.5+(height/10) && mouseY <= row*height/9.5+(height/10)+height/9.5-2)
-          {
-            int returning[] = {col, row};
-            return returning;
-          }
+          int returning[] = {col, row};
+          return returning;
         }
       }
     }
-    return null;
   }
+  return null;
+}
 }
